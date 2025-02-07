@@ -21,4 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Home page urls
     path('', include('home.urls')),
+    # E-Commerce urls
+    path('items/', include('ecommerce.urls')),
 ]

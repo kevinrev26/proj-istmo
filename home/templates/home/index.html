@@ -26,7 +26,10 @@
                         alt="{{ product.name }}"
                     />
                     <div class="card-body text-center">
-                        <h5 class="product-name">{{ product.name }}</h5>
+                        <a href="{% url 'ecommerce.show' id=product.id %}"
+                            class="btn bg-dark text-white">
+                            <h5 class="product-name">{{ product.name }}</h5>
+                        </a>
                         <p class="product-price">${{ product.price }}</p>
                     </div>
                 </div>
