@@ -1,0 +1,40 @@
+.bg-index {
+    background: url("/static/img/background.jpg") no-repeat fixed;
+    background-size: 100% auto;
+}
+
+.bavbar a.navlink {
+    color: #fffef6 !important;
+}
+
+.bg-dark {
+    background-color: #2E2E2E !important;
+}
+
+.product-img {
+    width: 100%; /* Full width inside the card */
+    height: 200px; /* Set a fixed height */
+    object-fit: cover; /* Ensure the image fits within the specified dimensions */
+}
+
+.product-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.product-price {
+    font-size: 1.1em;
+    color: #28a745; /* Green color for price */
+    margin: 5px 0;
+}
+
+.product-rating {
+    font-size: 0.9em;
+    color: #ffc107; /* Yellow color for ratings */
+}
+
+.product-rating i {
+    margin: 0 2px;
+    font-size: 1.2em; /* Adjust the size of the stars */
+}
