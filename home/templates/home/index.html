@@ -14,6 +14,21 @@
                 <!-- Event Banner-->
                 <hr />
                 <!-- List of products here!-->
+                <p class="card-text">
+                    <form method="GET">
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="input-group col-auto">
+                                    <div class="input-group-text">Search</div>
+                                    <input type="text" class="form-control" name="search">
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn bg-dark text-white" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </p>
             </div>
         </div>
         <div class="row">
@@ -21,8 +36,8 @@
             <div class="col-md-4 col-lg-3 mb-4">
                 <div class="card p-2 align-items-center">
                     <img 
-                        src="{{ product.image }}" 
-                        class="card-img-top rounded product-img" 
+                        src="{{ product.image.url }}" 
+                        class="card-img-top rounded product-img img-card-200" 
                         alt="{{ product.name }}"
                     />
                     <div class="card-body text-center">

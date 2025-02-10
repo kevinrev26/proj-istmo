@@ -1,11 +1,16 @@
 from django.shortcuts import render
-from ecommerce.common import get_products
+from ecommerce.models import Product
 
 
 def index(request):
+    search_term = request.GET.get('search')
     template_data = {}
+    if search_term:
+        template_data['products'] = Product.objects.filter(name__icontains=search_term)
+    else:
+        template_data['products'] = Product.objects.all()
+
     template_data['title'] = 'Project Istmo'
-    template_data['products'] = get_products()
     return render(request, 'home/index.html', {
         'template_data': template_data
     })
