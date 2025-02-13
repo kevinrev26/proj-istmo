@@ -1,0 +1,5 @@
+# Change log
+
+### 0.0.1 version
+- Added accounts flow
+- Product models in the home page
