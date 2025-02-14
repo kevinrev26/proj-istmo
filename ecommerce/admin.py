@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Product
+from .models import Product, Review
 
 class ProductAdmin(admin.ModelAdmin):
     ordering = ['name']
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Review)
