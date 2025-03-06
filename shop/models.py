@@ -6,7 +6,7 @@ class Shop(models.Model):
     name  = models.CharField(max_length=255)
     logo = models.ImageField(upload_to='shop_logos/')
     description = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.id) + ' - ' + self.name + ' - ' + self.user.username
