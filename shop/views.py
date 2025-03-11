@@ -11,6 +11,7 @@ def show(request):
         if request.method == "POST":
             form = ShopForm(request.POST, request.FILES)
             if form.is_valid():
+                # So if you commit=False, the form is save in "memory" onlt
                 shop = form.save(commit=False)
                 shop.owner = request.user
                 shop.save()

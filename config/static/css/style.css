@@ -48,3 +48,34 @@
     width: fit-content;
     max-height: 400px;
 }
+
+.sidebar {
+    background-color: #ffffff;
+    height: 100vh;
+    padding-top: 20px;
+    border-right: 1px solid #dee2e6;
+}
+
+.sidebar .nav-link {
+    color: #333;
+    font-weight: 500;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.card-body h6 {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.list-group-item {
+    border-radius: 5px;
+}
