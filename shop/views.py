@@ -36,3 +36,13 @@ def show(request):
 def show_analytics(request):
     user_shop = Shop.objects.filter(owner=request.user).first()
     return render(request, 'shop/analytics.html', {'shop' : user_shop})
+
+@login_required
+def show_inventory(request):
+    user_shop = Shop.objects.filter(owner=request.user).first()
+    return render(request, 'shop/inventory.html', {'shop': user_shop})
+
+@login_required
+def show_chat(request):
+    user_shop = Shop.objects.filter(owner=request.user).first()
+    return render(request, 'shop/chat.html', {'shop': user_shop})
