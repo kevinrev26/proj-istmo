@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        {% include 'shop/partials/dashboard_navbar.html' %}
+        <div class="col-md-9 col-lg-10">
+            <div class="card mb-4">
+                <div class="card-header">
+                  Order #{{ order.id }}
+                </div>
+                <div class="card-body">
+                  <b>Date:</b> {{ order.date }}<br />
+                  <b>Total:</b> ${{ order.total }}<br />
+                  <b>Status:</b> {{order.get_status_display}}<br />
+                  <form method="post" action="{% url 'shop.update_order_status' order.id %}">
+                    {% csrf_token %}
+                    <div class="d-flex align-items-center mt-3">
+                      <label for="status" class="me-2 fw-bold">Change Status:</label>
+                      <select name="status" id="status" class="form-select form-select-sm w-auto me-2">
+                        {% for key, value in order.OrderStatus.choices %}
+                          <option value="{{ key }}" {% if order.status == key %}selected{% endif %}>
+                            {{ value }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                      <button type="submit" class="btn btn-sm btn-primary">Update Status</button>
+                    </div>
+                  </form>
+                  <table class="table table-bordered table-striped text-center mt-3">
+                    <thead>
+                      <tr>
+                        <th scope="col">Item ID</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in order.item_set.all %}
+                      <tr>
+                        <td>{{ item.product.id }}</td>
+                        <td>
+                          <a class="link-dark" href="{% url 'ecommerce.show' id=item.product.id %}">                    
+                            {{ item.product.name }}
+                          </a>
+                        </td>
+                        <td>${{ item.product.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

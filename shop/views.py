@@ -5,6 +5,8 @@ from cart.models import Order, Item
 from django.contrib.auth.decorators import login_required
 from .forms import ShopForm, ProductForm
 from django.utils.timezone import now
+from django.shortcuts import redirect
+from django.contrib import messages
 
 @login_required
 def show(request):
@@ -42,6 +44,28 @@ def show_orders(request):
     #TODO Validate when there is no user shop.
     orders = Order.objects.filter(shop=user_shop)
     return render(request, 'shop/orders.html', {'orders': orders})
+
+@login_required
+def show_order_details(request, order_id):
+    #TODO: Validate if order exists
+    order = Order.objects.get(id=order_id)
+    return render(request, 'shop/order_detail.html', {'order': order})
+
+@login_required
+def update_order_status(request, order_id):
+    if request.method == 'POST':
+        try:
+            order = Order.objects.get(id=order_id)
+            new_status = int(request.POST.get('status'))
+            #TODO Check for Delivred or Done status, to send electronic biling
+            order.status = new_status
+            order.save()
+            messages.success(request, 'Order status updated.')
+        except Order.DoesNotExist:
+            messages.error(request, 'Order not found.')
+        except Exception as e:
+            messages.error(request, 'Error updating order: ' + str(e))
+    return redirect('shop.order_detail', order_id=order_id)
 
 @login_required
 def show_inventory(request):

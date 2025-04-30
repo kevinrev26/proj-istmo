@@ -54,7 +54,7 @@ def purchase(request):
         shop = Shop.objects.get(id=shop_id)
         
         order_total = calculate_cart_total(cart, products_in_shop)
-
+        #TODO Add new row for Customer model
         order = Order.objects.create(
             user=request.user,
             total=order_total,

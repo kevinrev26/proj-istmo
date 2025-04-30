@@ -41,7 +41,7 @@
                                 <td>{{ product.created_at }}</td> 
                             {% endcomment %}
                             <td>
-                                <button class="btn btn-sm btn-outline-secondary">Details</button>
+                                <a href="{% url 'shop.order_detail' order.id %}" class="btn btn-sm btn-outline-secondary">Details</a>
                             </td>
                         </tr>
                         {% empty %}
