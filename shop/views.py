@@ -32,11 +32,7 @@ def show(request):
             return render(request, 'shop/shop_creation.html', {'template_data': template_data})
     else:
         return render(request, 'shop/show.html', {'shop': user_shop})
-    
-@login_required
-def show_analytics(request):
-    user_shop = Shop.objects.filter(owner=request.user).first()
-    return render(request, 'shop/analytics.html', {'shop' : user_shop})
+
 
 @login_required
 def show_orders(request):

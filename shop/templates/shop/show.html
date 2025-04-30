@@ -11,8 +11,8 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
                 <h1 class="h2">Dashboard</h1>
                 <div>
-                    <span class="me-2">Tuesday, October 18</span>
-                    <span class="fw-bold">Cecilia Y. (Branch Manager)</span>
+                    <span class="me-2">{% now "l, F j Y" %}</span>
+                    <span class="fw-bold">{{ user.username }}</span>
                 </div>
             </div>
 
@@ -52,37 +52,32 @@
                 </div>
             </div>
 
-            <!-- Sales by Country -->
+            <!-- Sales & Revenue Overview -->
             <div class="row mt-4">
-                <div class="col-md-12">
-                    <h4>Sales by Country</h4>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <div class="card shadow-sm text-center">
-                                <div class="card-body">
-                                    <p>🇩🇪 Germany</p>
-                                    <h5>4.4k products</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card shadow-sm text-center">
-                                <div class="card-body">
-                                    <p>🇫🇷 France</p>
-                                    <h5>3.6k products</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="card shadow-sm text-center">
-                                <div class="card-body">
-                                    <p>🇮🇹 Italy</p>
-                                    <h5>3.1k products</h5>
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3">
+                        <h5>Total Sales</h5>
+                        <h3 class="text-primary">$12,340</h3>
+                        <small class="text-muted">+5% from last month</small>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3">
+                        <h5>Orders Processed</h5>
+                        <h3 class="text-success">2,890</h3>
+                        <small class="text-muted">+3.2% from last month</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-sm p-3">
+                        <h5>Average Order Value</h5>
+                        <h3 class="text-warning">$42.8</h3>
+                        <small class="text-muted">-1.5% from last month</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
                 <!-- Performance Overview -->
                 <div class="col-md-6">
                     <div class="card shadow-sm">
@@ -92,29 +87,32 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Sales Trends (Last 6 Months)</h6>
+                            <canvas id="salesChart2"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Team Members -->
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <h4>Team Members</h4>
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            John Smith <span class="badge bg-primary">Manager</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Anastasiya Primo <span class="badge bg-secondary">Digital Marketing</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Colt Heist <span class="badge bg-secondary">Digital Marketing</span>
-                        </li>
-                    </ul>
+            <!-- Sales Trends (Chart.js) -->
+            <div class="row mt-4">                
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Customer Growth</h6>
+                            <canvas id="customerChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
 </div>
 <script>
+    // Sales chart
     var ctx = document.getElementById('salesChart').getContext('2d');
     var salesChart = new Chart(ctx, {
         type: 'bar',
@@ -143,6 +141,53 @@
                 }
             }
         }
+    });
+
+    // Chart integration
+
+    var ctxSales = document.getElementById('salesChart2').getContext('2d');
+    var salesChart = new Chart(ctxSales, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Total Revenue ($)',
+                data: [8200, 9100, 9800, 10400, 11300, 12340], 
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    var ctxCustomers = document.getElementById('customerChart').getContext('2d');
+    var customerChart = new Chart(ctxCustomers, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'New Customers',
+                data: [250, 320, 410, 530, 620, 710], 
+                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    var ctxMarketing = document.getElementById('marketingChart').getContext('2d');
+    var marketingChart = new Chart(ctxMarketing, {
+        type: 'doughnut',
+        data: {
+            labels: ['Facebook Ads', 'Google Ads', 'Instagram', 'WhatsApp'],
+            datasets: [{
+                data: [45, 30, 15, 10],
+                backgroundColor: ['#3b5998', '#ea4335', '#E1306C', '#25D366']
+            }]
+        },
+        options: { responsive: true }
     });
 </script>
 {% endblock %}
