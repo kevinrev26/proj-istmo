@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row">
+        <!-- Sidebar -->
+        {% include 'shop/partials/dashboard_navbar.html' %}
+
+        <!-- Main Content -->
+        <main class="col-md-10 ms-sm-auto px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h1 class="h2">Dashboard</h1>
+                <div>
+                    <span class="me-2">Tuesday, October 18</span>
+                    <span class="fw-bold">Cecilia Y. (Branch Manager)</span>
+                </div>
+            </div>
+
+            <!-- Store Overview -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Orders Provided</h6>
+                            <p class="fs-5">210 Processing | 109 Processed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Store Products</h6>
+                            <p class="fs-5">3.4k Total | 352 Sold Out</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Orders Imported</h6>
+                            <p class="fs-5">176 New | 315 Total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Orders Dispatched</h6>
+                            <p class="fs-5">256 Total | 49 Return</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales by Country -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h4>Sales by Country</h4>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="card shadow-sm text-center">
+                                <div class="card-body">
+                                    <p>🇩🇪 Germany</p>
+                                    <h5>4.4k products</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card shadow-sm text-center">
+                                <div class="card-body">
+                                    <p>🇫🇷 France</p>
+                                    <h5>3.6k products</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card shadow-sm text-center">
+                                <div class="card-body">
+                                    <p>🇮🇹 Italy</p>
+                                    <h5>3.1k products</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Performance Overview -->
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h6>Performance Overview</h6>
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h4>Team Members</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            John Smith <span class="badge bg-primary">Manager</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Anastasiya Primo <span class="badge bg-secondary">Digital Marketing</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Colt Heist <span class="badge bg-secondary">Digital Marketing</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    var ctx = document.getElementById('salesChart').getContext('2d');
+    var salesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Total Transactions',
+                data: [120, 150, 180, 130, 210, 90, 235, 150, 80, 190, 220, 250], // Replace with dynamic data if needed
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Total Revenue ($)',
+                data: [2400, 3000, 3600, 2600, 4200, 1800, 3400, 2900, 1600, 3800, 4400, 5000], // Replace with dynamic data
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

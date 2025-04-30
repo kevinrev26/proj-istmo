@@ -1,0 +1,81 @@
+.bg-index {
+    background: url("/static/img/background.jpg") no-repeat fixed;
+    background-size: 100% auto;
+}
+
+.bavbar a.navlink {
+    color: #fffef6 !important;
+}
+
+.bg-dark {
+    background-color: #2E2E2E !important;
+}
+
+.product-img {
+    width: 100%; /* Full width inside the card */
+    height: 200px; /* Set a fixed height */
+    object-fit: cover; /* Ensure the image fits within the specified dimensions */
+}
+
+.product-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.product-price {
+    font-size: 1.1em;
+    color: #28a745; /* Green color for price */
+    margin: 5px 0;
+}
+
+.product-rating {
+    font-size: 0.9em;
+    color: #ffc107; /* Yellow color for ratings */
+}
+
+.product-rating i {
+    margin: 0 2px;
+    font-size: 1.2em; /* Adjust the size of the stars */
+}
+
+.img-card-200 {
+    width: fit-content;
+    max-height: 200px;
+}
+
+.img-card-400 {
+    width: fit-content;
+    max-height: 400px;
+}
+
+.sidebar {
+    background-color: #ffffff;
+    height: 100vh;
+    padding-top: 20px;
+    border-right: 1px solid #dee2e6;
+}
+
+.sidebar .nav-link {
+    color: #333;
+    font-weight: 500;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.card-body h6 {
+    font-weight: bold;
+    color: #6c757d;
+}
+
+.list-group-item {
+    border-radius: 5px;
+}

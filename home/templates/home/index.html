@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<header class="masthead bg-index text-while text-center py-4">
+    <div class="container d-flex align-items-center flex-column pt2">
+        <h2>Project Istmo!</h2>
+        <p>Buy anything you want!</p>
+    </div>
+</header>
+<div class="p-3">
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col mx-auto text-center mb-3">
+                <h4>Welcome to our marketplace!!</h4>
+                <!-- Event Banner-->
+                <hr />
+                <!-- List of products here!-->
+                <p class="card-text">
+                    <form method="GET">
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="input-group col-auto">
+                                    <div class="input-group-text">Search</div>
+                                    <input type="text" class="form-control" name="search">
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn bg-dark text-white" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            {% for product in template_data.products %}
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card p-2 align-items-center">
+                    <img 
+                        src="{{ product.image.url }}" 
+                        class="card-img-top rounded product-img img-card-200" 
+                        alt="{{ product.name }}"
+                    />
+                    <div class="card-body text-center">
+                        <a href="{% url 'ecommerce.show' id=product.id %}"
+                            class="btn bg-dark text-white">
+                            <h5 class="product-name">{{ product.name }}</h5>
+                        </a>
+                        <p class="product-price">${{ product.price }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

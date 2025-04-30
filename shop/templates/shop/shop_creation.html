@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-3 mt-4">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow p-3 mb-4 rounded">
+            <div class="card-body">
+              <h2>Shop creation</h2>
+              <hr />
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+              <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ template_data.form.as_p }}
+                <button type="submit" class="btn bg-dark text-white">
+                  Create Shop
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock content %}
