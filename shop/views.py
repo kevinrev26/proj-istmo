@@ -7,6 +7,8 @@ from .forms import ShopForm, ProductForm
 from django.utils.timezone import now
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.db.models import Sum, Avg
+from .helpers import get_current_and_previous_days, get_sales_rate
 
 @login_required
 def show(request):
@@ -31,8 +33,66 @@ def show(request):
             template_data['form'] = form
             return render(request, 'shop/shop_creation.html', {'template_data': template_data})
     else:
-        return render(request, 'shop/show.html', {'shop': user_shop})
+        # Get orders and other stuff for the dashboard.
+        template_data = {}
+        template_data['shop'] = user_shop
 
+        #TODO Refactor into a helper function
+        new_orders_count = Order.objects.filter(shop=user_shop, status=Order.OrderStatus.IN_PROCESS).count()
+        orders_processed = Order.objects.filter(shop=user_shop).exclude(
+                status__in = [
+                    Order.OrderStatus.PENDING,
+                    Order.OrderStatus.IN_PROCESS
+                ]
+        ).count()
+        total_dispatched = Order.objects.filter(shop=user_shop, status=Order.OrderStatus.DISPATCHED).count()
+        orders_canceled = Order.objects.filter(shop=user_shop, status=Order.OrderStatus.CANCELED).count()
+        total_sales = Order.objects.filter(shop=user_shop, status=Order.OrderStatus.DONE).aggregate(
+            total=Sum('total'))['total'] or 0
+
+        str_prv_month, end_prv_month, str_curr_month = get_current_and_previous_days()
+
+        current_month_sales = Order.objects.filter(
+            shop=user_shop,
+            status=Order.OrderStatus.DONE,
+            date__gte=str_curr_month
+        ).aggregate(total=Sum('total'))['total'] or 0
+
+        previous_month_sales = Order.objects.filter(
+            shop=user_shop,
+            status=Order.OrderStatus.DONE,
+            date__gte=str_prv_month,
+            date__lte=end_prv_month
+        ).aggregate(total=Sum('total'))['total'] or 0
+        
+        rate, rate_class = get_sales_rate(previous_month_sales, current_month_sales)
+
+        avg_month_orders = Order.objects.filter(
+            shop=user_shop,
+            status=Order.OrderStatus.DONE,
+            date__gte=str_curr_month
+        ).aggregate(total=Avg('total'))['total'] or 0
+
+        avg_previous_month_orders = Order.objects.filter(
+            shop=user_shop,
+            status=Order.OrderStatus.DONE,
+            date__gte=str_prv_month,
+            date__lte=end_prv_month
+        ).aggregate(total=Avg('total'))['total'] or 0
+        
+        avg_rate, avg_rate_class = get_sales_rate(avg_previous_month_orders, avg_month_orders)
+
+        template_data['new_orders_count'] = new_orders_count
+        template_data['orders_processed'] = orders_processed
+        template_data['total_dispatched'] = total_dispatched
+        template_data['orders_canceled'] = orders_canceled
+        template_data['total_sales'] = total_sales
+        template_data['rate'] = rate
+        template_data['rate_class'] = rate_class
+        template_data['avg_month_orders'] = avg_month_orders
+        template_data['avg_rate'] = avg_rate
+        template_data['avg_rate_class'] = avg_rate_class
+        return render(request, 'shop/show.html', {'template_data': template_data})
 
 @login_required
 def show_orders(request):

@@ -22,7 +22,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h6>Orders Provided</h6>
-                            <p class="fs-5">210 Processing | 109 Processed</p>
+                            <p class="fs-5">{{template_data.new_orders_count}} Processing | {{template_data.orders_processed}} Processed</p>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <h6>Orders Dispatched</h6>
-                            <p class="fs-5">256 Total | 49 Return</p>
+                            <p class="fs-5">{{template_data.total_dispatched}} Total | {{template_data.orders_canceled}} Canceled/Returned</p>
                         </div>
                     </div>
                 </div>
@@ -41,15 +41,15 @@
                 <div class="col-md-4">
                     <div class="card shadow-sm p-3">
                         <h5>Total Sales</h5>
-                        <h3 class="text-primary">$12,340</h3>
-                        <small class="text-muted">+5% from last month</small>
+                        <h3 class="text-primary">${{template_data.total_sales}}</h3>
+                        <small class="{{ template_data.rate_class }}">{{template_data.rate}}% from last month</small>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card shadow-sm p-3">
                         <h5>Average Order Value</h5>
-                        <h3 class="text-warning">$42.8</h3>
-                        <small class="text-muted">-1.5% from last month</small>
+                        <h3 class="text-warning">${{template_data.avg_month_orders}}</h3>
+                        <small class="{{ template_data.avg_rate_class }}">{{template_data.avg_rate}}% from last month</small>
                     </div>
                 </div>
             </div>
