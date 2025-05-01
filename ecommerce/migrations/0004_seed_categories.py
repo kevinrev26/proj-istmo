@@ -40,4 +40,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(seed_categories, reverse_code=unseed_categories),
     ]
