@@ -29,7 +29,7 @@
                             <td>{{ order.total }}</td>
                             <td>{{ order.date }}</td>
                             <td>{{ order.user.username }}</td>
-                            <td>{{ order.status }}</td>
+                            <td>{{ order.get_status_display }}</td>
                             {% comment %} 
                                 <td>
                                     <span class="badge {% if product.status == 'Published' %}bg-success{% elif product.status == 'Draft' %}bg-secondary{% else %}bg-danger{% endif %}">

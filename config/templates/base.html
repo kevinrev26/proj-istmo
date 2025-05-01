@@ -32,7 +32,12 @@
                 </button>
                 <div  id="navbarNavAltMarkup" class="collapse navbar-collapse">
                     <div class="navbar-nav ms-auto navbar-ml">
-                        <a class="nav-link" href="{% url 'shop.show' %}">My Shop</a>
+                        <a class="nav-link" href="{% url 'shop.show' %}">
+                            My Shop
+                            {% if has_alerts %}
+                                <span class="badge bg-danger">!</span>
+                            {% endif %}
+                        </a>
                         <a class="nav-link" href="{% url 'home.about' %}">About</a>
                         <a class="nav-link" href="{% url 'cart.index' %}">Cart</a>
                         <div class="vr bg-white mx-2 d-none d-lg-block">

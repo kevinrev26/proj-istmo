@@ -3,8 +3,18 @@
         <h2 class="text-center my-4">ShopWave</h2>
         <ul class="nav flex-column">
             <li class="nav-item"><a class="nav-link" href="{% url 'shop.show' %}">Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'shop.inventory' %}">Inventory</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'shop.orders' %}">Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'shop.inventory' %}">
+                Inventory
+                {% if low_stock_count > 0 %}
+                    <span class="badge bg-danger">{{ low_stock_count }}</span>
+                {% endif %}
+            </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'shop.orders' %}">
+                Orders
+                {% if new_orders_count > 0 %}
+                    <span class="badge bg-warning text-dark">{{ new_orders_count }}</span>
+                {% endif %}
+            </a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'shop.chat' %}">Chat</a></li>
         </ul>
     </div>
