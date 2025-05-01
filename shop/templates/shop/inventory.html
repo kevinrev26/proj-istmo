@@ -27,7 +27,7 @@
                         {% for product in products %}
                         <tr>
                             <td>{{ product.name }}</td>
-                            <td>{{ product.price }}</td>
+                            <td>${{ product.price }}</td>
                             <td>{{ product.stock }}</td>
                             <td>{{ product.last_updated }}</td>
                             {% comment %} 
