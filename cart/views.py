@@ -54,7 +54,9 @@ def purchase(request):
         shop = Shop.objects.get(id=shop_id)
         
         order_total = calculate_cart_total(cart, products_in_shop)
-        #TODO Add new row for Customer model
+
+        #TODO Apply rollback to avoid duplicate entries
+
         order = Order.objects.create(
             user=request.user,
             total=order_total,
@@ -63,10 +65,14 @@ def purchase(request):
         created_orders.append(order)
 
         for product in products_in_shop:
-            #TODO Decrease Stock quantity
+            qty = cart[str(product.id)]
+            stock = product.stock
+            stock.quantity = stock.quantity - int(qty)
+            stock.save()
+            
             Item.objects.create(
                 product=product,
-                quantity=cart[str(product.id)],
+                quantity=qty,
                 price=product.price,
                 order=order
             )
