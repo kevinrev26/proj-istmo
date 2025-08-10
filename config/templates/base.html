@@ -43,6 +43,10 @@
                            href="{% url 'cart.index' %}">
                             <i class="fas fa-shopping-cart me-1"></i>Carrito
                         </a>
+                        <a class="nav-link {% if request.resolver_match.url_name == 'cart.index' %}active{% endif %}" 
+                            href="{% url 'shop.subcription_plans' %}">
+                         <i class="fas fa-shopping-cart me-1"></i>Subscripciones
+                        </a>
                         
                         <div class="vr bg-white mx-2 d-none d-lg-block opacity-25" style="height: 30px;"></div>
                         

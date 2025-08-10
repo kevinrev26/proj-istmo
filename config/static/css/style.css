@@ -703,3 +703,37 @@
   background-color: #1d4ed8;
   border-color: #1d4ed8;
 }
+
+/* === SUBCRIPTION PLANS === */
+.subscription-plans {
+  background-color: #f8f9fa;
+}
+
+.card {
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.list-unstyled li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn-primary {
+  background-color: #2563EB;
+  border-color: #2563EB;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563EB;
+}

@@ -1,5 +1,6 @@
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Shop
+from .models import Shop, Subscription, SubscriptionPlan
 from ecommerce.models import Product, Stock, StockMovement
 from cart.models import Order, Item
 from django.contrib.auth.decorators import login_required
@@ -184,3 +185,37 @@ def add_stock(request, product_id):
             )
             stock_movement.save()
             return redirect('shop.inventory')
+
+@login_required
+def show_subcription_plan(request):
+    user = request.user
+    template_data = {
+        'user' : user,
+    }
+    return render(request, 'shop/subscription_plan.html', {'template_data': template_data})
+
+@login_required
+def start_trial(request, plan):
+    # Get the requested plan
+    plan_obj = get_object_or_404(SubscriptionPlan, slug=plan)
+    
+    # Check if user already has an active subscription
+    if hasattr(request.user, 'subscription'):
+        messages.warning(request, "Ya tienes una suscripción activa")
+        return redirect('shop.dashboard')
+    
+    # Create trial subscription
+    trial_end_date = datetime.now() + timedelta(days=30)
+    
+    Subscription.objects.create(
+        user=request.user,
+        plan=plan_obj,
+        is_trial=True,
+        is_active=True,
+        start_date=datetime.now(),
+        end_date=trial_end_date,
+        next_billing_date=trial_end_date
+    )
+    
+    messages.success(request, f"¡Prueba gratuita de {plan_obj.name} activada por 30 días!")
+    return redirect('shop.show')

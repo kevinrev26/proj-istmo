@@ -9,4 +9,6 @@ urlpatterns = [
     path('chat', views.show_chat, name='shop.chat'),
     path('add_product', views.add_product, name='shop.add_product'),
     path('add_stock/<int:product_id>/', views.add_stock, name='shop.add_stock'),
+    path('subcription_plans', views.show_subcription_plan, name='shop.subcription_plans'),
+    path('subscription/start-trial/<str:plan>/', views.start_trial, name='subscription.start_trial'),
 ]
