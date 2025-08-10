@@ -7,6 +7,7 @@ class Shop(models.Model):
     logo = models.ImageField(upload_to='shop_logos/')
     description = models.CharField(max_length=255)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    #TODO: Add creation time
 
     def __str__(self):
         return str(self.id) + ' - ' + self.name + ' - ' + self.owner.username

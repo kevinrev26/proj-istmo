@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 {% if messages %}
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
@@ -14,57 +15,154 @@
     {% endfor %}
 </div>
 {% endif %}
-<header class="masthead bg-index text-while text-center py-4">
-    <div class="container d-flex align-items-center flex-column pt2">
-        <h2>Project Istmo!</h2>
-        <p>Buy anything you want!</p>
-    </div>
-</header>
-<div class="p-3">
-    <div class="container">
-        <div class="row mt-3">
-            <div class="col mx-auto text-center mb-3">
-                <h4>Welcome to our marketplace!!</h4>
-                <!-- Event Banner-->
-                <hr />
-                <!-- List of products here!-->
-                <p class="card-text">
-                    <form method="GET">
-                        <div class="row">
-                            <div class="col-auto">
-                                <div class="input-group col-auto">
-                                    <div class="input-group-text">Search</div>
-                                    <input type="text" class="form-control" name="search">
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <button class="btn bg-dark text-white" type="submit">Search</button>
-                            </div>
-                        </div>
-                    </form>
-                </p>
+
+<!-- Hero Section -->
+<section class="hero-section py-5 mb-4">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h1 class="display-4 fw-bold mb-3">IstmoPay Marketplace</h1>
+        <p class="lead mb-4">Conectando compradores con emprendedores salvadoreños</p>
+        
+        <div class="search-container mx-auto">
+          <form method="GET" class="d-flex shadow-lg rounded-pill overflow-hidden bg-white">
+            <div class="input-group">
+              <input 
+                type="text" 
+                class="form-control border-0 py-3 px-4" 
+                name="search" 
+                placeholder="Buscar productos, tiendas..."
+                aria-label="Search"
+              >
+              <button class="btn btn-primary px-4" type="submit">
+                <i class="fas fa-search me-2"></i> Buscar
+              </button>
             </div>
+          </form>
         </div>
-        <div class="row">
-            {% for product in template_data.products %}
-            <div class="col-md-4 col-lg-3 mb-4">
-                <div class="card p-2 align-items-center">
-                    <img 
-                        src="{{ product.image.url }}" 
-                        class="card-img-top rounded product-img img-card-200" 
-                        alt="{{ product.name }}"
-                    />
-                    <div class="card-body text-center">
-                        <a href="{% url 'ecommerce.show' id=product.id %}"
-                            class="btn bg-dark text-white">
-                            <h5 class="product-name">{{ product.name }}</h5>
-                        </a>
-                        <p class="product-price">${{ product.price }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="categories-section mb-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Categorías Populares</h2>
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <a href="#" class="category-card card h-100 border-0 shadow-sm text-decoration-none">
+          <div class="card-body text-center py-4">
+            <i class="fas fa-tshirt fa-3x mb-3 text-primary"></i>
+            <h5 class="mb-0">Ropa</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="#" class="category-card card h-100 border-0 shadow-sm text-decoration-none">
+          <div class="card-body text-center py-4">
+            <i class="fas fa-utensils fa-3x mb-3 text-primary"></i>
+            <h5 class="mb-0">Comida</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="#" class="category-card card h-100 border-0 shadow-sm text-decoration-none">
+          <div class="card-body text-center py-4">
+            <i class="fas fa-home fa-3x mb-3 text-primary"></i>
+            <h5 class="mb-0">Hogar</h5>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="#" class="category-card card h-100 border-0 shadow-sm text-decoration-none">
+          <div class="card-body text-center py-4">
+            <i class="fas fa-hand-holding-heart fa-3x mb-3 text-primary"></i>
+            <h5 class="mb-0">Artesanías</h5>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products Section -->
+<section class="products-section mb-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Productos Recientes</h2>
+      <a href="#" class="btn btn-outline-primary">Ver todos</a>
+    </div>
+    
+    <div class="row g-4">
+      {% for product in template_data.products %}
+      <div class="col-md-4 col-lg-3">
+        <div class="card product-card h-100 border-0 shadow-sm overflow-hidden">
+          <div class="position-relative">
+            <img 
+              src="{{ product.image.url }}" 
+              class="card-img-top product-img" 
+              alt="{{ product.name }}"
+            >
+            <div class="card-img-overlay d-flex justify-content-end">
+              <button class="btn btn-sm btn-light rounded-circle shadow-sm">
+                <i class="far fa-heart"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <a href="{% url 'ecommerce.show' id=product.id %}" class="text-decoration-none">
+              <h5 class="product-name mb-2">{{ product.name }}</h5>
+            </a>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="product-price fw-bold">${{ product.price }}</span>
+              <div class="product-rating small text-warning">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-top-0">
+            <button class="btn btn-primary w-100">
+              <i class="fas fa-cart-plus me-2"></i> Añadir al carrito
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Featured Shops -->
+<section class="shops-section mb-5">
+  <div class="container">
+    <h2 class="text-center mb-4">Tiendas Destacadas</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card shop-card text-center border-0 shadow-sm">
+          <div class="card-body py-4">
+            <div class="shop-logo mx-auto mb-3 rounded-circle overflow-hidden" style="width: 80px; height: 80px;">
+              <img src="https://via.placeholder.com/80" class="w-100 h-100 object-fit-cover" alt="Shop Logo">
+            </div>
+            <h5 class="mb-1">Artesanías SV</h5>
+            <p class="text-muted small mb-2">San Salvador</p>
+            <div class="shop-rating small text-warning mb-2">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <a href="#" class="btn btn-sm btn-outline-primary">Visitar tienda</a>
+          </div>
+        </div>
+      </div>
+      <!-- Repeat shop cards 3 more times -->
+    </div>
+  </div>
+</section>
 {% endblock content %}

@@ -1,50 +1,178 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
 {% load cart_filters %}
-<div class="p-3">
+
+{% block content %}
+<div class="cart-container py-5">
   <div class="container">
-    <div class="row mt-3">
-      <div class="col mx-auto mb-3">
-        <h2>Shopping Cart</h2>
-        <hr />
+    <div class="row mb-4">
+      <div class="col">
+        <h2 class="fw-bold">
+          <i class="fas fa-shopping-cart me-2 text-primary"></i>
+          Tu Carrito de Compras
+        </h2>
+        <p class="text-muted">Revisa y confirma tus productos</p>
       </div>
     </div>
-    <div class="row m-1">
-      <table class="table table-bordered table-striped text-center">
-        <thead>
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for product in template_data.products_in_cart %}
-          <tr>
-            <td>{{ product.id }}</td>
-            <td>{{ product.name }}</td>
-            <td>${{ product.price }}</td>
-            <td>{{ request.session.cart|get_quantity:product.id }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+
+    {% if template_data.products_in_cart|length > 0 %}
     <div class="row">
-      <div class="text-end">
-        <a class="btn btn-outline-secondary mb-2"><b>Total to pay:</b> ${{ template_data.cart_total }}</a>
-        <a href="{% url 'cart.purchase' %}" class="btn bg-dark text-white mb-2">Purchase</a>
-        {% if template_data.products_in_cart|length > 0 %}
-        <a href="{% url 'cart.clear' %}">
-          <button class="btn btn-danger mb-2">
-            Remove all movies from Cart
-          </button>
-        </a>
-        {% endif %}
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3 overflow-hidden mb-4">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead class="bg-light">
+                <tr>
+                  <th scope="col" class="ps-4">Producto</th>
+                  <th scope="col" class="text-center">Precio</th>
+                  <th scope="col" class="text-center">Cantidad</th>
+                  <th scope="col" class="text-center">Subtotal</th>
+                  <th scope="col" class="text-end pe-4"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in template_data.products_in_cart %}
+                <tr class="cart-item">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <img src="{{ product.image.url }}" 
+                           class="img-thumbnail rounded me-3" 
+                           alt="{{ product.name }}"
+                           style="width: 80px; height: 80px; object-fit: cover;">
+                      <div>
+                        <h6 class="mb-1 fw-bold">{{ product.name }}</h6>
+                        <p class="text-muted mb-0 small">ID: {{ product.id }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <span class="fw-bold">${{ product.price }}</span>
+                  </td>
+                  <td class="text-center">
+                    <div class="quantity-selector d-inline-flex border rounded-2">
+                      <button class="btn btn-sm px-3 decrease-qty" data-product-id="{{ product.id }}">
+                        <i class="fas fa-minus small"></i>
+                      </button>
+                      <span class="px-3 align-self-center">{{ request.session.cart|get_quantity:product.id }}</span>
+                      <button class="btn btn-sm px-3 increase-qty" data-product-id="{{ product.id }}">
+                        <i class="fas fa-plus small"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="text-center fw-bold">
+                    ${{ product.price|multiply:request.session.cart|get_quantity:product.id }}
+                  </td>
+                  <td class="text-end pe-4">
+                    <button class="btn btn-sm btn-outline-danger remove-item" data-product-id="{{ product.id }}">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between mb-4">
+          <a href="{% url 'home.index' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Seguir Comprando
+          </a>
+          <a href="{% url 'cart.clear' %}" class="btn btn-outline-danger">
+            <i class="fas fa-trash-alt me-2"></i> Vaciar Carrito
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-3">
+          <div class="card-header bg-primary text-white py-3">
+            <h5 class="mb-0">Resumen de Compra</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Subtotal</span>
+              <span>${{ template_data.cart_total }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Envío</span>
+              <span class="text-success">Gratis</span>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-between mb-3">
+              <span class="fw-bold">Total</span>
+              <span class="fw-bold fs-5 text-primary">${{ template_data.cart_total }}</span>
+            </div>
+            <a href="{% url 'cart.purchase' %}" class="btn btn-primary w-100 py-3 fw-bold">
+              <i class="fas fa-lock me-2"></i> Proceder al Pago
+            </a>
+            <div class="mt-3 text-center">
+              <img src="{% static 'img/payment-methods.png' %}" alt="Métodos de pago" class="img-fluid" style="max-height: 30px;">
+              <p class="small text-muted mt-2 mb-0">Compra segura con IstmoPay</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    {% else %}
+    <div class="row">
+      <div class="col text-center py-5">
+        <div class="empty-cart-icon mb-4">
+          <i class="fas fa-shopping-cart fa-4x text-muted"></i>
+        </div>
+        <h4 class="mb-3">Tu carrito está vacío</h4>
+        <p class="text-muted mb-4">Agrega productos para comenzar tu compra</p>
+        <a href="{% url 'home.index' %}" class="btn btn-primary px-4 py-2">
+          <i class="fas fa-store me-2"></i> Ir a Tiendas
+        </a>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </div>
-{% endblock content %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Quantity adjustment
+    document.querySelectorAll('.increase-qty').forEach(button => {
+      button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        updateQuantity(productId, 'increase');
+      });
+    });
+    
+    document.querySelectorAll('.decrease-qty').forEach(button => {
+      button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        updateQuantity(productId, 'decrease');
+      });
+    });
+    
+    // Remove item
+    document.querySelectorAll('.remove-item').forEach(button => {
+      button.addEventListener('click', function() {
+        const productId = this.getAttribute('data-product-id');
+        if(confirm('¿Eliminar este producto de tu carrito?')) {
+          window.location.href = `/cart/remove/${productId}/`;
+        }
+      });
+    });
+    
+    function updateQuantity(productId, action) {
+      fetch(`/cart/update/${productId}/${action}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.success) {
+          window.location.reload();
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

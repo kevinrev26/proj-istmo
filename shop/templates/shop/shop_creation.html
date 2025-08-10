@@ -1,33 +1,181 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="p-3 mt-4">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card shadow p-3 mb-4 rounded">
-            <div class="card-body">
-              <h2>Shop creation</h2>
-              <hr />
-                {% if form.errors %}
-                <div class="alert alert-danger">
-                    <ul>
-                        {% for field, errors in form.errors.items %}
-                            <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-              <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ template_data.form.as_p }}
-                <button type="submit" class="btn bg-dark text-white">
-                  Create Shop
-                </button>
-              </form>
+<div class="shop-creation-container py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+          <!-- Form Header -->
+          <div class="card-header bg-primary text-white py-4">
+            <div class="text-center">
+              <h2 class="mb-0">
+                <i class="fas fa-store me-2"></i>
+                Crear Tu Tienda
+              </h2>
+              <p class="mb-0 small opacity-75">Comienza a vender en IstmoPay</p>
             </div>
+          </div>
+          
+          <!-- Shop Creation Form -->
+          <div class="card-body p-4 p-md-5">
+            {% if template_data.form.errors %}
+            <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i>
+              <div>
+                <h5 class="alert-heading mb-2">Corrige los siguientes errores:</h5>
+                <ul class="mb-0 ps-3">
+                  {% for field, errors in template_data.form.errors.items %}
+                    {% for error in errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            {% endif %}
+            
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+              {% csrf_token %}
+              
+              <!-- Shop Name -->
+              <div class="mb-4">
+                <label for="id_name" class="form-label fw-bold">Nombre de la Tienda*</label>
+                <input 
+                  type="text" 
+                  id="id_name" 
+                  name="name" 
+                  class="form-control form-control-lg py-3" 
+                  placeholder="Ejemplo: 'Artesanías Salvadoreñas'"
+                  required
+                  value="{{ template_data.form.name.value|default_if_none:'' }}"
+                >
+                <small class="text-muted">Este será el nombre público de tu tienda (mínimo 4 caracteres)</small>
+              </div>
+              
+              <!-- Shop Description -->
+              <div class="mb-4">
+                <label for="id_description" class="form-label fw-bold">Descripción*</label>
+                <textarea 
+                  id="id_description" 
+                  name="description" 
+                  class="form-control form-control-lg py-3" 
+                  rows="4"
+                  placeholder="Describe los productos que ofrecerás..."
+                  required
+                >{{ template_data.form.description.value|default_if_none:'' }}</textarea>
+                <small class="text-muted">Cuéntale a los clientes qué hace especial a tu tienda (mínimo 20 caracteres)</small>
+              </div>
+              
+              <!-- Shop Logo -->
+              <div class="mb-4">
+                <label for="id_logo" class="form-label fw-bold">Logo de la Tienda</label>
+                <div class="file-upload-wrapper border rounded-3 p-4 text-center">
+                  <div class="logo-preview mb-3" id="logoPreview">
+                    <i class="fas fa-store fa-4x text-muted"></i>
+                    <p class="small text-muted mt-2">Vista previa del logo</p>
+                  </div>
+                  <div class="input-group">
+                    <input 
+                      type="file" 
+                      id="id_logo" 
+                      name="logo" 
+                      class="form-control" 
+                      accept="image/*"
+                      onchange="previewLogo(this)"
+                    >
+                    <label class="input-group-text" for="id_logo">
+                      <i class="fas fa-cloud-upload-alt me-2"></i> Subir
+                    </label>
+                  </div>
+                  <small class="text-muted d-block mt-2">Formatos aceptados: JPG, PNG (Máx. 2MB)</small>
+                </div>
+              </div>
+              
+              <!-- Shop Category -->
+              <div class="mb-4">
+                <label for="id_category" class="form-label fw-bold">Categoría Principal*</label>
+                <select 
+                  id="id_category" 
+                  name="category" 
+                  class="form-select form-select-lg py-3" 
+                  required
+                >
+                  <option value="" disabled selected>Selecciona una categoría</option>
+                  <option value="food">Comida y Bebidas</option>
+                  <option value="handmade">Artesanías</option>
+                  <option value="clothing">Ropa y Accesorios</option>
+                  <option value="electronics">Electrónicos</option>
+                  <option value="home">Hogar y Decoración</option>
+                  <option value="other">Otros</option>
+                </select>
+              </div>
+              
+              <!-- Terms Agreement -->
+              <div class="mb-4">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="terms" required>
+                  <label class="form-check-label small" for="terms">
+                    Acepto los <a href="#" class="text-primary">Términos para Comerciantes</a> y confirmo que tengo 
+                    derecho a vender estos productos
+                  </label>
+                </div>
+              </div>
+              
+              <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold">
+                  <i class="fas fa-store me-2"></i> Crear Mi Tienda
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </div>
-{% endblock content %}
+
+<script>
+  // Logo preview functionality
+  function previewLogo(input) {
+    const preview = document.getElementById('logoPreview');
+    
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        preview.innerHTML = `<img src="${e.target.result}" alt="Logo preview" class="img-fluid">`;
+      }
+      
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  
+  // Form validation
+  (function() {
+    'use strict'
+    
+    const forms = document.querySelectorAll('.needs-validation')
+    
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+  
+  // Set selected category if exists
+  document.addEventListener('DOMContentLoaded', function() {
+    const categoryValue = "{{ template_data.form.category.value|default_if_none:'' }}";
+    if (categoryValue) {
+      document.getElementById('id_category').value = categoryValue;
+    }
+  });
+</script>
+{% endblock %}

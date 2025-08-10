@@ -1,23 +1,172 @@
 {% extends 'base.html' %}
-{% block content %}
 {% load static %}
-<div class="p-3">
-    <div class="container">
-        <div class="row mt-3">
-            <div class="col-md-6 mx-auto mb-3">
-                <h2>About</h2>
-                <hr />
-                <p>
-                    Lorem ipsum
-                </p>
-                <p>
-                    Discover the covenience
-                </p>
-            </div>
-            <div class="col-md-6 mx-auto mb-3 text-center">
-                <img src="{% static 'img/about.jpg' %}" class="max-width-100" alt="about"/>
-            </div>
+
+{% block content %}
+<div class="about-page">
+  <!-- Hero Section -->
+  <section class="about-hero py-5 text-white">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="display-4 fw-bold mb-4">Conectando Emprendedores y Compradores</h1>
+          <p class="lead mb-4">IstmoPay es el mercado digital que impulsa el comercio local en El Salvador</p>
+          <a href="{% url 'shop.show' %}" class="btn btn-primary btn-lg px-4 py-2">
+            <i class="fas fa-store me-2"></i> Explora Tiendas
+          </a>
         </div>
+        <div class="col-lg-6">
+          <img src="{% static 'img/about-hero.jpg' %}" alt="Mercado salvadoreño" class="img-fluid rounded-3 shadow">
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- Our Story -->
+  <section class="py-5 bg-light">
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center mb-5">
+          <h2 class="fw-bold mb-3">Nuestra Historia</h2>
+          <div class="divider mx-auto"></div>
+        </div>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <img src="{% static 'img/about-story.jpg' %}" alt="Fundadores de IstmoPay" class="img-fluid rounded-3 shadow">
+        </div>
+        <div class="col-lg-6">
+          <h3 class="fw-bold mb-3">Desde El Salvador para el Mundo</h3>
+          <p class="lead">Fundada en 2023, IstmoPay nació de la visión de crear un puente digital entre los talentosos emprendedores salvadoreños y compradores que valoran productos auténticos.</p>
+          <p>Nuestro equipo combina experiencia en comercio electrónico con un profundo conocimiento del mercado local, ofreciendo una plataforma diseñada específicamente para las necesidades de las PYMES salvadoreñas.</p>
+          <div class="d-flex align-items-center mt-4">
+            <div class="bg-primary text-white rounded-circle p-3 me-3">
+              <i class="fas fa-bullseye fa-2x"></i>
+            </div>
+            <div>
+              <h5 class="fw-bold mb-1">Nuestra Misión</h5>
+              <p class="mb-0">Democratizar el comercio electrónico para todos los emprendedores</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="py-5">
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center mb-5">
+          <h2 class="fw-bold mb-3">Nuestros Valores</h2>
+          <div class="divider mx-auto"></div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-4">
+              <div class="icon-box bg-primary bg-opacity-10 text-primary mb-4">
+                <i class="fas fa-hands-helping fa-2x"></i>
+              </div>
+              <h4 class="fw-bold mb-3">Comunidad</h4>
+              <p>Creemos en el poder de la colaboración y el apoyo mutuo entre emprendedores.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-4">
+              <div class="icon-box bg-primary bg-opacity-10 text-primary mb-4">
+                <i class="fas fa-medal fa-2x"></i>
+              </div>
+              <h4 class="fw-bold mb-3">Calidad</h4>
+              <p>Promovemos productos que reflejan el talento y dedicación de nuestros vendedores.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-4">
+              <div class="icon-box bg-primary bg-opacity-10 text-primary mb-4">
+                <i class="fas fa-lock fa-2x"></i>
+              </div>
+              <h4 class="fw-bold mb-3">Confianza</h4>
+              <p>Garantizamos transacciones seguras y protección para compradores y vendedores.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="py-5 bg-light">
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center mb-5">
+          <h2 class="fw-bold mb-3">Conoce al Equipo</h2>
+          <div class="divider mx-auto"></div>
+          <p class="lead">El talento detrás de IstmoPay</p>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <img src="{% static 'img/team1.jpg' %}" class="card-img-top" alt="Fundador">
+            <div class="card-body text-center">
+              <h5 class="fw-bold mb-1">Kevin Rivera</h5>
+              <p class="text-muted mb-3">Fundador & CEO</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-primary"><i class="fab fa-linkedin fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <img src="{% static 'img/team2.jpg' %}" class="card-img-top" alt="CTO">
+            <div class="card-body text-center">
+              <h5 class="fw-bold mb-1">María Rodríguez</h5>
+              <p class="text-muted mb-3">Directora de Tecnología</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-primary"><i class="fab fa-linkedin fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            <img src="{% static 'img/team3.jpg' %}" class="card-img-top" alt="Marketing">
+            <div class="card-body text-center">
+              <h5 class="fw-bold mb-1">Carlos Méndez</h5>
+              <p class="text-muted mb-3">Director de Marketing</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="text-primary"><i class="fab fa-linkedin fa-lg"></i></a>
+                <a href="#" class="text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-5 bg-primary text-white">
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+          <h2 class="fw-bold mb-4">¿Listo para unirte a nuestra comunidad?</h2>
+          <p class="lead mb-4">Regístrate hoy y comienza a comprar o vender productos locales</p>
+          <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'accounts.signup' %}" class="btn btn-light btn-lg px-4">Crear Cuenta</a>
+            <a href="{% url 'shop.show' %}" class="btn btn-outline-light btn-lg px-4">Ver Tiendas</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
-{% endblock content %}
+{% endblock %}

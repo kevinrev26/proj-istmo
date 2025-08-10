@@ -1,33 +1,117 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="p-3 mt-4">
+<div class="support-ticket py-5">
     <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-          <div class="card shadow p-3 mb-4 rounded">
-            <div class="card-body">
-              <h2>{{ template_data.title }}</h2>
-              <hr />
-              {% if form.errors %}
-              <div class="alert alert-danger">
-                  <ul>
-                      {% for field, errors in form.errors.items %}
-                          <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
-                      {% endfor %}
-                  </ul>
-              </div>
-              {% endif %}
-              <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ template_data.form.as_p }}
-                <button type="submit" class="btn bg-dark text-white">
-                  Add
-                </button>
-              </form>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-3 overflow-hidden">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h2 class="mb-0">
+                            <i class="fas fa-headset me-2"></i>
+                            {{ template_data.title }}
+                        </h2>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        {% if form.errors %}
+                        <div class="alert alert-danger rounded-2">
+                            <h5 class="alert-heading">Error en el formulario</h5>
+                            <ul class="mb-0">
+                                {% for field, errors in form.errors.items %}
+                                    <li><strong>{{ field|title }}:</strong> {{ errors|join:", " }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="mb-4">
+                                <label for="id_title" class="form-label fw-bold text-dark">Título</label>
+                                <input 
+                                    type="text" 
+                                    name="title" 
+                                    id="id_title" 
+                                    class="form-control form-control-lg border-2 py-3 px-3" 
+                                    placeholder="Ejemplo: Problema con mi pedido #1234"
+                                    required
+                                >
+                                <div class="invalid-feedback">
+                                    Por favor ingresa un título para tu ticket
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_description" class="form-label fw-bold text-dark">Descripción</label>
+                                <textarea 
+                                    name="description" 
+                                    id="id_description" 
+                                    class="form-control border-2 py-3 px-3" 
+                                    rows="5"
+                                    placeholder="Describe tu problema en detalle..."
+                                    required
+                                ></textarea>
+                                <div class="invalid-feedback">
+                                    Por favor describe tu problema
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="id_image" class="form-label fw-bold text-dark">Imagen (Opcional)</label>
+                                <div class="file-upload-wrapper">
+                                    <input 
+                                        type="file" 
+                                        name="image" 
+                                        id="id_image" 
+                                        class="form-control form-control-lg border-2 py-3 px-3"
+                                        accept="image/*"
+                                    >
+                                    <small class="text-muted">Puedes subir una captura de pantalla u otra imagen relevante</small>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold">
+                                    <i class="fas fa-paper-plane me-2"></i> Enviar Ticket
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="support-info mt-4 p-4 bg-light rounded-3">
+                    <h5 class="text-dark mb-3">
+                        <i class="fas fa-info-circle me-2 text-primary"></i> Información de Soporte
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-clock me-2 text-primary"></i> Tiempo de respuesta: 24-48 horas</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i> Email: soporte@istmopay.com</li>
+                        <li><i class="fas fa-phone me-2 text-primary"></i> Teléfono: +503 1234-5678</li>
+                    </ul>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
 </div>
+
+<script>
+    // Client-side form validation
+    (function() {
+        'use strict'
+        
+        const forms = document.querySelectorAll('.needs-validation')
+        
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
 {% endblock %}
