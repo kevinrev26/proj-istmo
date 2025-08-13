@@ -737,3 +737,26 @@
   background-color: rgba(37, 99, 235, 0.1);
   color: #2563EB;
 }
+
+/* === PHONE NUMEBRS === */
+/* Flag styling */
+.fi {
+  width: 1.2em;
+  height: 0.9em;
+  border-radius: 2px;
+  box-shadow: 0 0 1px rgba(0,0,0,0.5);
+}
+
+/* Dropdown styling */
+.country-code-dropdown {
+  min-width: 120px;
+}
+
+.country-code-dropdown .dropdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.country-code-dropdown .dropdown-menu {
+  min-width: 100%;
+}

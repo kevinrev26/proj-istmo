@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_countries',
     'home',
     'ecommerce',
     'accounts',
@@ -54,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'shop.middleware.SubscriptionMiddleware',
+    # 'shop.middleware.SubscriptionMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

@@ -3,7 +3,6 @@ from django.contrib.auth import login as auth_login, authenticate, logout as aut
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomErrorList
 from django.shortcuts import redirect
-from django.contrib.auth.models import User
 
 def signup(request):
     template_data = {}

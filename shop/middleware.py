@@ -27,12 +27,12 @@ class SubscriptionMiddleware:
                 if subscription.end_date < datetime.now():
                     subscription.is_active = False
                     subscription.save()
-                    messages.warning(request, "Tu suscripción ha expirado")
-                    return redirect('shop.subscription_plan')
+                    # messages.warning(request, "Tu suscripción ha expirado")
+                    return redirect('shop.subcription_plans')
             
             # Redirect to subscription page if no active subscription
-            elif not request.path == reverse('shop.subscription_plan'):
-                messages.info(request, "Por favor elige un plan para continuar")
-                return redirect('shop.subscription_plan')
+            elif not request.path == reverse('shop.subcription_plans'):
+                # messages.info(request, "Por favor elige un plan para continuar")
+                return redirect('shop.subcription_plans')
         
         return self.get_response(request)
