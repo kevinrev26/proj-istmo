@@ -13,6 +13,26 @@
         <meta name="viewport" content="width=device-width,initial-scale=1" />
     </head>
     <body>
+        {% if messages %}
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+                {% for message in messages %}
+                <div class="toast align-items-center text-white bg-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" id="toast-{{ forloop.counter }}">
+                <div class="d-flex">
+                    <div class="toast-body">
+                    <i class="fas 
+                        {% if message.tags == 'success' %}fa-check-circle{% endif %}
+                        {% if message.tags == 'info' %}fa-info-circle{% endif %}
+                        {% if message.tags == 'warning' %}fa-exclamation-triangle{% endif %}
+                        {% if message.tags == 'error' %}fa-times-circle{% endif %}
+                        me-2"></i>
+                    {{ message }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <!-- HEADER-->
         <nav class="navbar navbar-expand-lg navbar-dark istmo-navbar">
             <div class="container">
@@ -80,5 +100,36 @@
         
         <!--Footer -->
         <!--End of footer-->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all toasts
+            const toastElList = document.querySelectorAll('.toast');
+            const toastList = [...toastElList].map(toastEl => {
+                // Initialize Bootstrap Toast
+                const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 5000  // 5 seconds
+                });
+                toast.show();
+                
+                // Add click handler to close button
+                const closeButton = toastEl.querySelector('.btn-close');
+                if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    toast.hide();
+                });
+                }
+                
+                return toast;
+            });
+
+            // Optional: Handle when toast is hidden
+            toastElList.forEach(toastEl => {
+                toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+                });
+            });
+            });
+        </script>
     </body>
 </html>

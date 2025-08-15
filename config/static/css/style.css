@@ -760,3 +760,45 @@
 .country-code-dropdown .dropdown-menu {
   min-width: 100%;
 }
+
+/* === FOR MESSAGES AND TOOLTIPS === */
+.messages-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+}
+
+.alert {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.alert-success {
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+  color: #0f5132;
+}
+
+.alert-info {
+  background-color: #cff4fc;
+  border-color: #b6effb;
+  color: #055160;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+  color: #664d03;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+  color: #842029;
+}
+
+.toast {
+  transition: opacity 0.5s ease-in-out;
+  margin-bottom: 0.5rem;
+}

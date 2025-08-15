@@ -138,3 +138,16 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+
+
+# EMAILS:
+# this is for console emails and testing:
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.yourprovider.com'  # e.g., smtp.gmail.com
+# EMAIL_PORT = 587  # typically 587 for TLS
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your@email.com'
+# EMAIL_HOST_PASSWORD = 'yourpassword'
+# DEFAULT_FROM_EMAIL = 'your@email.com'
