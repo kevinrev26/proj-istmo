@@ -1,6 +1,7 @@
 # middleware.py
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib import messages
 from datetime import datetime
 
 class SubscriptionMiddleware:
@@ -27,12 +28,12 @@ class SubscriptionMiddleware:
                 if subscription.end_date < datetime.now():
                     subscription.is_active = False
                     subscription.save()
-                    # messages.warning(request, "Tu suscripción ha expirado")
+                    messages.warning(request, "Tu suscripción ha expirado")
                     return redirect('shop.subcription_plans')
             
             # Redirect to subscription page if no active subscription
             elif not request.path == reverse('shop.subcription_plans'):
-                # messages.info(request, "Por favor elige un plan para continuar")
+                messages.info(request, "Por favor elige un plan para continuar")
                 return redirect('shop.subcription_plans')
         
         return self.get_response(request)

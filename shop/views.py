@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Shop, Subscription, SubscriptionPlan
-from ecommerce.models import Product, Stock, StockMovement
+from ecommerce.models import Product, Stock, StockMovement, Category
 from cart.models import Order, Item
 from django.contrib.auth.decorators import login_required
 from .forms import ShopForm, ProductForm
@@ -14,7 +14,6 @@ from .helpers import get_current_and_previous_days, get_sales_rate
 @login_required
 def show(request):
     user_shop = Shop.objects.filter(owner=request.user).first()
-    print(user_shop)
     if not user_shop:
         if request.method == "POST":
             form = ShopForm(request.POST, request.FILES)
@@ -32,6 +31,7 @@ def show(request):
             form = ShopForm()
             template_data = {}
             template_data['form'] = form
+            template_data['categories'] = Category.objects.filter(parent__isnull=True)
             return render(request, 'shop/shop_creation.html', {'template_data': template_data})
     else:
         # Get orders and other stuff for the dashboard.
@@ -93,6 +93,7 @@ def show(request):
         template_data['avg_month_orders'] = avg_month_orders
         template_data['avg_rate'] = avg_rate
         template_data['avg_rate_class'] = avg_rate_class
+        template_data['shop'] = user_shop 
         return render(request, 'shop/show.html', {'template_data': template_data})
 
 @login_required

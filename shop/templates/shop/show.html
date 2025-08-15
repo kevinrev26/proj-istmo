@@ -15,6 +15,9 @@
                     <span class="fw-bold">{{ user.username }}</span>
                 </div>
             </div>
+            <span class="badge bg-{% if shop.status == 'active' %}success{% else %}warning{% endif %}">
+                {{ shop.get_status_display }}
+            </span>
 
             <!-- Store Overview -->
             <div class="row">

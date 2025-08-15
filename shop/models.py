@@ -1,16 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
+from django.utils.text import slugify
 
 class Shop(models.Model):
     id = models.AutoField(primary_key=True)
-    name  = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, help_text="Nombre publico de tu tienda")
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     logo = models.ImageField(upload_to='shop_logos/')
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, help_text="Describe your products (min. 20 characters).")
+    category = models.ForeignKey('ecommerce.Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Categoria Principal')
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    #TODO: Add creation time
+    terms_accepted = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, default="pending", choices=[("active", "Active"), ("pending", "Pending"), ("suspended", "Suspended")])
+    contact_email = models.EmailField(blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    address = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id) + ' - ' + self.name + ' - ' + self.owner.username
+        return f"{self.id} - {self.name} - {self.owner.username}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        
+        if not self.pk:
+            if self.terms_accepted and self.logo:
+                self.status = 'active'
+            #TODO: Notify admins for new flows.
+        super().save(*args, **kwargs)
 
 
 class SubscriptionPlan(models.Model):

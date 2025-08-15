@@ -666,6 +666,44 @@
   border-color: #1d4ed8;
 }
 
+/* Additional styles for the new fields */
+.file-upload-wrapper {
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.file-upload-wrapper:hover {
+  background-color: #e9ecef;
+}
+
+.logo-preview {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  border-radius: 0.25rem;
+  padding: 1rem;
+}
+
+.logo-preview img {
+  max-height: 120px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Make form controls consistent */
+.form-control-lg, .form-select-lg {
+  border-radius: 0.5rem;
+  border: 1px solid #ced4da;
+}
+
+/* Add some spacing between sections */
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
 
 /* === ABOUT === */
 .about-hero {

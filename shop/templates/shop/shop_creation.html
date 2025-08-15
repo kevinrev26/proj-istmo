@@ -73,8 +73,12 @@
                 <label for="id_logo" class="form-label fw-bold">Logo de la Tienda</label>
                 <div class="file-upload-wrapper border rounded-3 p-4 text-center">
                   <div class="logo-preview mb-3" id="logoPreview">
-                    <i class="fas fa-store fa-4x text-muted"></i>
-                    <p class="small text-muted mt-2">Vista previa del logo</p>
+                    {% if template_data.form.logo.value %}
+                      <img src="{{ template_data.form.logo.value.url }}" alt="Logo preview" class="img-fluid">
+                    {% else %}
+                      <i class="fas fa-store fa-4x text-muted"></i>
+                      <p class="small text-muted mt-2">Vista previa del logo</p>
+                    {% endif %}
                   </div>
                   <div class="input-group">
                     <input 
@@ -103,20 +107,67 @@
                   required
                 >
                   <option value="" disabled selected>Selecciona una categoría</option>
-                  <option value="food">Comida y Bebidas</option>
-                  <option value="handmade">Artesanías</option>
-                  <option value="clothing">Ropa y Accesorios</option>
-                  <option value="electronics">Electrónicos</option>
-                  <option value="home">Hogar y Decoración</option>
-                  <option value="other">Otros</option>
+                  {% for category in template_data.categories %}
+                    <option value="{{ category.id }}" {% if template_data.form.category.value == category.id %}selected{% endif %}>
+                      {{ category.name }}
+                    </option>
+                  {% endfor %}
                 </select>
+              </div>
+              
+              <!-- Contact Email -->
+              <div class="mb-4">
+                <label for="id_contact_email" class="form-label fw-bold">Correo Electrónico de Contacto</label>
+                <input 
+                  type="email" 
+                  id="id_contact_email" 
+                  name="contact_email" 
+                  class="form-control form-control-lg py-3" 
+                  placeholder="ejemplo@tutienda.com"
+                  value="{{ template_data.form.contact_email.value|default_if_none:'' }}"
+                >
+                <small class="text-muted">Para que los clientes puedan contactarte</small>
+              </div>
+              
+              <!-- Phone Number -->
+              <div class="mb-4">
+                <label for="id_phone" class="form-label fw-bold">Teléfono</label>
+                <input 
+                  type="tel" 
+                  id="id_phone" 
+                  name="phone" 
+                  class="form-control form-control-lg py-3" 
+                  placeholder="+503 1234 5678"
+                  value="{{ template_data.form.phone.value|default_if_none:'' }}"
+                >
+                <small class="text-muted">Número para contacto directo</small>
+              </div>
+              
+              <!-- Address -->
+              <div class="mb-4">
+                <label for="id_address" class="form-label fw-bold">Dirección</label>
+                <textarea 
+                  id="id_address" 
+                  name="address" 
+                  class="form-control form-control-lg py-3" 
+                  rows="3"
+                  placeholder="Dirección física de tu tienda (opcional)"
+                >{{ template_data.form.address.value|default_if_none:'' }}</textarea>
+                <small class="text-muted">Si tienes ubicación física</small>
               </div>
               
               <!-- Terms Agreement -->
               <div class="mb-4">
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="terms" required>
-                  <label class="form-check-label small" for="terms">
+                  <input 
+                    class="form-check-input" 
+                    type="checkbox" 
+                    id="id_terms_accepted" 
+                    name="terms_accepted"
+                    required
+                    {% if template_data.form.terms_accepted.value %}checked{% endif %}
+                  >
+                  <label class="form-check-label small" for="id_terms_accepted">
                     Acepto los <a href="#" class="text-primary">Términos para Comerciantes</a> y confirmo que tengo 
                     derecho a vender estos productos
                   </label>
