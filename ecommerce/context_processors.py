@@ -1,4 +1,4 @@
-from ecommerce.models import Stock
+from ecommerce.models import Stock, Wishlist
 from cart.models import Order
 from shop.models import Shop
 
@@ -20,3 +20,10 @@ def dashboard_context(request):
         'low_stock_count': low_stock_count,
         'has_alerts': new_orders_count > 0 or low_stock_count > 0,
     }
+
+
+def wishlist_count(request):
+    if request.user.is_authenticated:
+        wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+        return {'wishlist_count': wishlist.products.count()}
+    return {'wishlist_count': 0}

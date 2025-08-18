@@ -1,0 +1,169 @@
+{% load static %}
+<div class="card product-card h-100 border-0 shadow-sm overflow-hidden">
+    <div class="position-relative">
+        <img 
+            src="{{ product.image.url }}" 
+            class="card-img-top product-img" 
+            alt="{{ product.name }}"
+            onerror="this.onerror=null; this.src='{% static 'img/placeholder-product.png' %}';"
+        >
+        <div class="card-img-overlay d-flex justify-content-end p-2">
+            <button class="btn-like {% if product in request.user.wishlist.products.all %}liked{% endif %}" 
+                    data-product-id="{{ product.id }}"
+                    title="{% if product in request.user.wishlist.products.all %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+                <i class="{% if product in request.user.wishlist.products.all %}fas{% else %}far{% endif %} fa-heart like-icon"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <a href="{% url 'ecommerce.show' id=product.id %}" class="text-decoration-none">
+            <h5 class="product-name mb-2">{{ product.name }}</h5>
+        </a>
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="product-price fw-bold">${{ product.price|floatformat:2 }}</span>
+            <div class="product-rating small text-warning">
+                {% if product.average_rating > 0 %}
+                    {{ product.display_rating }}
+                {% else %}
+                    <span class="text-muted small">No ratings yet</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-transparent border-top-0">
+        <button class="btn btn-primary w-100 add-to-cart" data-product-id="{{ product.id }}">
+            <i class="fas fa-cart-plus me-2"></i> Add to Cart
+        </button>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 12px;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .product-img {
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    
+    .product-price {
+        color: #28a745;
+        font-size: 1.1rem;
+    }
+    
+    .btn-like {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-like:hover {
+        background: white;
+        transform: scale(1.1);
+    }
+    
+    .like-icon {
+        color: #dc3545;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-like.liked .like-icon {
+        font-weight: 900;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Wishlist toggle functionality
+    document.querySelectorAll('.btn-like').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            
+            fetch("{% url 'toggle_wishlist' product_id=0 %}".replace('0', productId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Toggle visual state
+                    this.classList.toggle('liked');
+                    const icon = this.querySelector('.like-icon');
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                    
+                    // Update title
+                    this.setAttribute('title', 
+                        this.classList.contains('liked') 
+                            ? 'Remove from wishlist' 
+                            : 'Add to wishlist');
+                    
+                    // Update count in navbar
+                    document.querySelectorAll('.wishlist-count').forEach(badge => {
+                        badge.textContent = data.wishlist_count;
+                    });
+                    
+                    // Show toast
+                    showToast(data.liked ? 'Added to wishlist' : 'Removed from wishlist');
+                    
+                    // If in wishlist view and removed, fade out card
+                    if (window.location.pathname.includes('wishlist') && !data.liked) {
+                        this.closest('.col-md-4').style.opacity = '0';
+                        setTimeout(() => this.closest('.col-md-4').remove(), 300);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error updating wishlist');
+            });
+        });
+    });
+
+    function showToast(message) {
+        const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+        const toast = document.createElement('div');
+        toast.className = 'toast show align-items-center text-white bg-primary border-0';
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1100';
+        document.body.appendChild(container);
+        return container;
+    }
+});
+</script>

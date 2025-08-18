@@ -18,9 +18,14 @@ class Shop(models.Model):
     address = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    average_rating = models.FloatField(default=0)
 
     def __str__(self):
         return f"{self.id} - {self.name} - {self.owner.username}"
+    
+    @property
+    def has_half_rating(self):
+        return self.average_rating % 1 >= 0.5
 
     def save(self, *args, **kwargs):
         if not self.slug:

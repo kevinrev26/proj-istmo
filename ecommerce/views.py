@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Review
+from .models import Product, Review, Wishlist
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 def show_item(request, id):
@@ -47,3 +49,30 @@ def delete_review(request, id, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     review.delete()
     return redirect('ecommerce.show', id=id)
+
+@require_POST
+@login_required
+def toggle_wishlist(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+    if product in wishlist.products.all():
+        wishlist.products.remove(product)
+        liked = False
+    else:
+        wishlist.products.add(product)
+        liked = True
+    
+    return JsonResponse({
+        'success': True,
+        'liked': liked,
+        'wishlist_count': wishlist.products.count()
+    })
+
+@login_required
+def wishlist_view(request):
+    wishlist = get_object_or_404(Wishlist, user=request.user)
+    wishlist_products = wishlist.products.all()
+    
+    return render(request, 'ecommerce/wishlist.html', {
+        'wishlist_products': wishlist_products
+    })

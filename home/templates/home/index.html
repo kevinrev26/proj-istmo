@@ -104,11 +104,13 @@
               class="card-img-top product-img" 
               alt="{{ product.name }}"
             >
-            <div class="card-img-overlay d-flex justify-content-end">
-              <button class="btn btn-sm btn-light rounded-circle shadow-sm">
-                <i class="far fa-heart"></i>
+            <div class="card-img-overlay d-flex justify-content-end p-2">
+              <button class="btn-like {% if product in request.user.wishlist.products.all %}liked{% endif %}" 
+                      data-product-id="{{ product.id }}"
+                      title="{% if product in request.user.wishlist.products.all %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+                  <i class="{% if product in request.user.wishlist.products.all %}fas{% else %}far{% endif %} fa-heart like-icon"></i>
               </button>
-            </div>
+          </div>
           </div>
           <div class="card-body">
             <a href="{% url 'ecommerce.show' id=product.id %}" class="text-decoration-none">
@@ -137,32 +139,136 @@
   </div>
 </section>
 
-<!-- Featured Shops -->
+<!-- Latest Shops Section -->
 <section class="shops-section mb-5">
   <div class="container">
-    <h2 class="text-center mb-4">Tiendas Destacadas</h2>
+    <h2 class="text-center mb-4">Últimas Tiendas</h2>
     <div class="row g-4">
+      {% for shop in latest_shops %}
       <div class="col-md-6 col-lg-3">
         <div class="card shop-card text-center border-0 shadow-sm">
           <div class="card-body py-4">
             <div class="shop-logo mx-auto mb-3 rounded-circle overflow-hidden" style="width: 80px; height: 80px;">
-              <img src="https://via.placeholder.com/80" class="w-100 h-100 object-fit-cover" alt="Shop Logo">
+              {% if shop.logo %}
+                <img src="{{ shop.logo.url }}" class="w-100 h-100 object-fit-cover" alt="{{ shop.name }}">
+              {% else %}
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light">
+                  <i class="fas fa-store fa-2x text-muted"></i>
+                </div>
+              {% endif %}
             </div>
-            <h5 class="mb-1">Artesanías SV</h5>
-            <p class="text-muted small mb-2">San Salvador</p>
+            <h5 class="mb-1">{{ shop.name }}</h5>
+            <p class="text-muted small mb-2">{{ shop.location }}</p>
             <div class="shop-rating small text-warning mb-2">
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
+              {% with ''|center:shop.average_rating as range %}
+                {% for _ in range %}
+                  <i class="fas fa-star"></i>
+                {% endfor %}
+              {% endwith %}
+              {% if shop.has_half_rating %}
+                <i class="fas fa-star-half-alt"></i>
+              {% endif %}
             </div>
-            <a href="#" class="btn btn-sm btn-outline-primary">Visitar tienda</a>
+            <a href="#" class="btn btn-sm btn-outline-primary">
+              Visitar tienda
+            </a>
           </div>
         </div>
       </div>
-      <!-- Repeat shop cards 3 more times -->
+      {% empty %}
+      <div class="col-12 text-center py-4">
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          No hay tiendas recientes por ahora
+        </div>
+      </div>
+      {% endfor %}
     </div>
   </div>
 </section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get CSRF token from meta tag
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+
+    // Wishlist toggle functionality
+    document.querySelectorAll('.btn-like').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.getAttribute('data-product-id');
+            
+            fetch("{% url 'toggle_wishlist' product_id=0 %}".replace('0', productId), {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCSRFToken(),
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Toggle visual state
+                    this.classList.toggle('liked');
+                    const icon = this.querySelector('.like-icon');
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                    
+                    // Update title attribute
+                    this.setAttribute('title', 
+                        this.classList.contains('liked') 
+                            ? 'Remove from wishlist' 
+                            : 'Add to wishlist');
+                    
+                    // Update wishlist count in navbar
+                    document.querySelectorAll('.wishlist-count').forEach(badge => {
+                        badge.textContent = data.wishlist_count;
+                    });
+                    
+                    // Show toast notification
+                    showToast(data.liked ? 'Added to wishlist' : 'Removed from wishlist');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Hubo un error al actualizar tus favoritos');
+            });
+        });
+    });
+
+    function showToast(message) {
+        const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+        const toast = document.createElement('div');
+        toast.className = 'toast show align-items-center text-white bg-primary border-0';
+        toast.role = 'alert';
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1100';
+        document.body.appendChild(container);
+        return container;
+    }
+});
+</script>
 {% endblock content %}

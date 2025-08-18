@@ -26,7 +26,14 @@
 
       <!-- Product Info Column -->
       <div class="col-lg-6">
-        <h1 class="fw-bold mb-3">{{ template_data.product.name }}</h1>
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h1 class="fw-bold mb-3">{{ template_data.product.name }}</h1>
+          <button class="btn-like {% if template_data.product in request.user.wishlist.products.all %}liked{% endif %}" 
+                  data-product-id="{{ template_data.product.id }}"
+                  title="{% if template_data.product in request.user.wishlist.products.all %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+              <i class="{% if template_data.product in request.user.wishlist.products.all %}fas{% else %}far{% endif %} fa-heart fa-lg like-icon"></i>
+          </button>
+        </div>
         
         <div class="d-flex align-items-center mb-3">
           <div class="product-rating text-warning me-2">
@@ -202,5 +209,63 @@
     const newSrc = thumbnail.querySelector('img').src;
     document.getElementById('mainProductImage').src = newSrc;
   }
+
+  // Wishlist toggle functionality
+document.querySelector('.btn-like')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    const productId = this.getAttribute('data-product-id');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    fetch("{% url 'toggle_wishlist' product_id=0 %}".replace('0', productId), {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Toggle visual state
+            this.classList.toggle('liked');
+            const icon = this.querySelector('.like-icon');
+            icon.classList.toggle('far');
+            icon.classList.toggle('fas');
+            
+            // Update title attribute
+            this.setAttribute('title', 
+                this.classList.contains('liked') 
+                    ? 'Remove from wishlist' 
+                    : 'Add to wishlist');
+            
+            // Update wishlist count in navbar if exists
+            const wishlistCount = document.querySelector('.wishlist-count');
+            if (wishlistCount) {
+                wishlistCount.textContent = data.wishlist_count;
+            }
+            
+            // Show toast notification
+            showToast(data.liked ? 'Added to wishlist' : 'Removed from wishlist');
+        }
+    });
+});
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed bottom-0 end-0 p-3';
+    toast.innerHTML = `
+        <div class="toast show align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 </script>
 {% endblock %}

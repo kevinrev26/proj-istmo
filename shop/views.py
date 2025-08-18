@@ -139,6 +139,7 @@ def show_inventory(request):
             'price': product.price,
             'stock': stock.quantity,
             'last_updated': stock.last_updated,
+            'image' : product.image,
         })
     return render(request, 'shop/inventory.html', {'shop': user_shop, 'products' : data})
 
@@ -155,6 +156,7 @@ def add_product(request):
     if request.method == 'GET':
         form = ProductForm()
         template_data['form'] = form
+        template_data['subcategories'] = Category.objects.filter(parent__isnull=False)
         return render(request, 'shop/add_product.html', {'template_data': template_data})
     elif request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)

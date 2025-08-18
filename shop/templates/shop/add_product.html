@@ -6,11 +6,11 @@
         <div class="col-md-8">
           <div class="card shadow p-3 mb-4 rounded">
             <div class="card-body">
-              <h2>{{ template_data.title }}</h2>
-              <hr />
+              <h2 class="text-primary mb-4">{{ template_data.title }}</h2>
+              <hr class="mb-4" />
               {% if form.errors %}
               <div class="alert alert-danger">
-                  <ul>
+                  <ul class="mb-0">
                       {% for field, errors in form.errors.items %}
                           <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
                       {% endfor %}
@@ -19,10 +19,81 @@
               {% endif %}
               <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ template_data.form.as_p }}
-                <button type="submit" class="btn bg-dark text-white">
-                  Add
-                </button>
+                
+                <!-- Name Field -->
+                <div class="form-group mb-3">
+                    <label for="id_name" class="form-label fw-bold">Name</label>
+                    <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                           id="id_name" name="name" value="{{ form.name.value|default:'' }}" required>
+                    {% for error in form.name.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Price Field -->
+                <div class="form-group mb-3">
+                    <label for="id_price" class="form-label fw-bold">Price</label>
+                    <input type="number" step="0.01" class="form-control {% if form.price.errors %}is-invalid{% endif %}" 
+                           id="id_price" name="price" value="{{ form.price.value|default:'' }}" required>
+                    {% for error in form.price.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Description Field -->
+                <div class="form-group mb-3">
+                    <label for="id_description" class="form-label fw-bold">Description</label>
+                    <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %}" 
+                              id="id_description" name="description" rows="3">{{ form.description.value|default:'' }}</textarea>
+                    {% for error in form.description.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Image Field -->
+                <div class="form-group mb-3">
+                    <label for="id_image" class="form-label fw-bold">Image</label>
+                    <div class="custom-file">
+                        <input type="file" class="form-control {% if form.image.errors %}is-invalid{% endif %}" 
+                               id="id_image" name="image">
+                    </div>
+                    {% for error in form.image.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Subcategory Field (Dynamic) -->
+                <div class="form-group mb-3">
+                    <label for="id_subcategory" class="form-label fw-bold">Subcategory</label>
+                    <select class="form-select {% if form.subcategory.errors %}is-invalid{% endif %}" 
+                            id="id_subcategory" name="subcategory" required>
+                        <option value="">Select a subcategory</option>
+                        {% for subcategory in template_data.subcategories %}
+                        <option value="{{ subcategory.id }}" {% if form.subcategory.value == subcategory.id %}selected{% endif %}>
+                            {{ subcategory.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    {% for error in form.subcategory.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                  <button type="submit" class="btn btn-primary px-4 py-2">
+                    Add Product
+                  </button>
+                </div>
               </form>
             </div>
           </div>

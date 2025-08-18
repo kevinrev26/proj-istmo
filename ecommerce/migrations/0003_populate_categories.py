@@ -135,7 +135,6 @@ def create_categories(apps, schema_editor):
             'Servicios Técnicos'
         ]),
         ('Servicios', [
-            'Turismo Local',
             'Clases de Cocina Típica',
             'Talleres Artesanales',
             'Transporte',
