@@ -222,3 +222,16 @@ def start_trial(request, plan):
     
     messages.success(request, f"¡Prueba gratuita de {plan_obj.name} activada por 30 días!")
     return redirect('shop.show')
+
+def store_front(request, store_slug):
+    shop = get_object_or_404(Shop, slug=store_slug)
+    products = Product.objects.filter(shop=shop)
+    
+    return render(request, 'store/front.html', {
+        'shop': shop,
+        'products': products,
+        'template_data': {
+            'title': shop.name,
+            'description': shop.description,
+        }
+    })

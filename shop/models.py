@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils.text import slugify
+from django.urls import reverse
 
 class Shop(models.Model):
     id = models.AutoField(primary_key=True)
@@ -26,10 +27,18 @@ class Shop(models.Model):
     @property
     def has_half_rating(self):
         return self.average_rating % 1 >= 0.5
+    
+    def get_absolute_url(self):
+        return reverse('store_front', kwargs={'store_slug': self.slug})
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
+
+        counter = 1
+        while Shop.objects.filter(slug=self.slug).exists():
+            self.slug = f"{slugify(self.name)}-{counter}"
+            counter += 1
         
         if not self.pk:
             if self.terms_accepted and self.logo:
