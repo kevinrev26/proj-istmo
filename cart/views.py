@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required
 def add(request, id):
     get_object_or_404(Product, id=id)
     cart = request.session.get('cart', {})
-    cart[id] = request.POST['quantity']
+    # Standardize to string keys
+    cart[str(id)] = request.POST['quantity']
     request.session['cart'] = cart
     return redirect('cart.index')
 
@@ -17,15 +18,22 @@ def index(request):
     cart_total = 0
     products_in_cart = []
     cart = request.session.get('cart', {})
-    product_ids = list(cart.keys())
-    if (product_ids != []):
-        products_in_cart = Product.objects.filter(id__in=product_ids)
-        cart_total = calculate_cart_total(cart, products_in_cart)
     
-    template_data = {}
-    template_data['title'] = 'Cart'
-    template_data['products_in_cart'] = products_in_cart
-    template_data['cart_total'] = cart_total
+    # Convert all keys to strings for consistency
+    str_cart = {str(k): v for k, v in cart.items()}
+    request.session['cart'] = str_cart  # Update session with string keys
+    
+    product_ids = list(str_cart.keys())
+    if product_ids:
+        products_in_cart = Product.objects.filter(id__in=product_ids)
+        cart_total = calculate_cart_total(str_cart, products_in_cart)
+    
+    template_data = {
+        'title': 'Cart',
+        'products_in_cart': products_in_cart,
+        'cart_total': cart_total,
+        'cart': str_cart  # Pass the standardized cart to the template
+    }
 
     return render(request, 'cart/index.html', {'template_data': template_data})
 
@@ -36,11 +44,13 @@ def clear(request):
 @login_required
 def purchase(request):
     cart = request.session.get('cart', {})
-    product_ids = list(cart.keys())
-    products = Product.objects.filter(id__in=product_ids)
-
-    if (product_ids == []):
+    str_cart = {str(k): v for k, v in cart.items()}
+    product_ids = list(str_cart.keys())
+    
+    if not product_ids:
         return redirect('cart.index')
+    
+    products = Product.objects.filter(id__in=product_ids)
     
     # Group products by shop
     shop_products = defaultdict(list)
@@ -50,12 +60,8 @@ def purchase(request):
     created_orders = []
 
     for shop_id, products_in_shop in shop_products.items():
-        
         shop = Shop.objects.get(id=shop_id)
-        
-        order_total = calculate_cart_total(cart, products_in_shop)
-
-        #TODO Apply rollback to avoid duplicate entries
+        order_total = calculate_cart_total(str_cart, products_in_shop)  # Use str_cart here
 
         order = Order.objects.create(
             user=request.user,
@@ -65,7 +71,7 @@ def purchase(request):
         created_orders.append(order)
 
         for product in products_in_shop:
-            qty = cart[str(product.id)]
+            qty = str_cart[str(product.id)]  # Use str_cart here
             stock = product.stock
             stock.quantity = stock.quantity - int(qty)
             stock.save()
@@ -77,11 +83,8 @@ def purchase(request):
                 order=order
             )
 
-    # Clear the cart
     request.session['cart'] = {}
-
     return render(request, 'cart/purchase.html', {
         'title': 'Purchase Confirmation',
-        # Leave the orders here to make use in the future.
         'orders': created_orders,
     })

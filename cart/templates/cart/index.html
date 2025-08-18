@@ -53,14 +53,11 @@
                       <button class="btn btn-sm px-3 decrease-qty" data-product-id="{{ product.id }}">
                         <i class="fas fa-minus small"></i>
                       </button>
-                      <span class="px-3 align-self-center">{{ request.session.cart|get_quantity:product.id }}</span>
+                      <span class="px-3 align-self-center">{{ template_data.cart|get_quantity:product.id }}</span>
                       <button class="btn btn-sm px-3 increase-qty" data-product-id="{{ product.id }}">
                         <i class="fas fa-plus small"></i>
                       </button>
                     </div>
-                  </td>
-                  <td class="text-center fw-bold">
-                    ${{ product.price|multiply:request.session.cart|get_quantity:product.id }}
                   </td>
                   <td class="text-end pe-4">
                     <button class="btn btn-sm btn-outline-danger remove-item" data-product-id="{{ product.id }}">
