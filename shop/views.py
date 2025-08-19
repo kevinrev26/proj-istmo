@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.db.models import Sum, Avg
+from django.core.paginator import Paginator
 from .helpers import get_current_and_previous_days, get_sales_rate
 
 @login_required
@@ -101,9 +102,50 @@ def show(request):
 @login_required
 def show_orders(request):
     user_shop = Shop.objects.filter(owner=request.user).first()
-    #TODO Validate when there is no user shop.
-    orders = Order.objects.filter(shop=user_shop)
-    return render(request, 'shop/orders.html', {'orders': orders})
+    if not user_shop:
+        return redirect('shop.show')
+    
+    orders = Order.objects.filter(shop=user_shop).order_by('-date')
+    
+    # Get filter parameters
+    customer = request.GET.get('customer', '')
+    status = request.GET.get('status', '')
+    date_range = request.GET.get('date_range', '')
+    
+    # Apply filters
+    if customer:
+        orders = orders.filter(
+            Q(user__username__icontains=customer) |
+            Q(user__email__icontains=customer)
+        )
+    
+    if status:
+        orders = orders.filter(status=status)
+    
+    if date_range:
+        today = timezone.now().date()
+        if date_range == 'today':
+            orders = orders.filter(date__date=today)
+        elif date_range == 'week':
+            orders = orders.filter(date__date__gte=today - timedelta(days=7))
+        elif date_range == 'month':
+            orders = orders.filter(date__date__gte=today - timedelta(days=30))
+        elif date_range == 'year':
+            orders = orders.filter(date__date__gte=today - timedelta(days=365))
+    
+    # Pagination
+    paginator = Paginator(orders, 25)
+    page_number = request.GET.get('page')
+    orders = paginator.get_page(page_number)
+    
+    # Get status choices from model
+    status_choices = Order.OrderStatus.choices
+    
+    context = {
+        'orders': orders,
+        'status_choices': status_choices,
+    }
+    return render(request, 'shop/orders.html', context)
 
 @login_required
 def show_order_details(request, order_id):
