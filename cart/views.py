@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from ecommerce.models import Product
-from ecommerce.models import Shop
+from ecommerce.models import Product, StockMovement, Shop
 from collections import defaultdict
 from .utils import calculate_cart_total
 from .models import Order, Item
@@ -75,6 +74,13 @@ def purchase(request):
             stock = product.stock
             stock.quantity = stock.quantity - int(qty)
             stock.save()
+
+            stock_movement = StockMovement(
+                product=product,
+                movement_type='outgoing',
+                quantity=qty
+            )
+            stock_movement.save()
             
             Item.objects.create(
                 product=product,

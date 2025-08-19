@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="row">
+        <!-- Include the navbar partial -->
+        {% include 'shop/partials/dashboard_navbar.html' %}
+
+        <!-- Main Content Area -->
+        <main class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
+            <!-- Header and Filter Section -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h2 mb-0">Stock Movements</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'shop.show' %}">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Stock Movements</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="d-flex gap-2">
+                    <form method="get" class="d-flex">
+                        <input type="text" name="product_name" value="{{ product_name }}" 
+                               class="form-control me-2" placeholder="Filter by product..." style="width: 200px;">
+                        <select name="date_filter" class="form-select" style="width: 150px;">
+                            {% for value, label in date_options %}
+                            <option value="{{ value }}" {% if date_filter == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary ms-2">
+                            <i class="fas fa-filter me-1"></i> Apply
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Stock Movements Card -->
+            <div class="card border-0 shadow-sm rounded-3 overflow-hidden mb-4">
+                <div class="card-body p-0">
+                    {% if grouped_movements %}
+                        {% for date, movements in grouped_movements.items %}
+                        <div class="border-bottom">
+                            <div class="bg-light p-3">
+                                <h5 class="mb-0 fw-bold">{{ date }}</h5>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-center">Type</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-end">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for movement in movements %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="{{ movement.product.image.url }}" 
+                                                         class="rounded me-3" 
+                                                         alt="{{ movement.product.name }}"
+                                                         style="width: 40px; height: 40px; object-fit: cover;">
+                                                    <div>
+                                                        <h6 class="mb-0">{{ movement.product.name }}</h6>
+                                                        <small class="text-muted">ID: {{ movement.product.id }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-{% if movement.movement_type == 'incoming' %}success{% else %}danger{% endif %}">
+                                                    {{ movement.get_movement_type_display }}
+                                                </span>
+                                            </td>
+                                            <td class="text-center fw-bold">
+                                                {{ movement.quantity }}
+                                            </td>
+                                            <td class="text-end text-muted">
+                                                {{ movement.date|time }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                            <h4>No stock movements found</h4>
+                            <p class="text-muted">Try adjusting your filters</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for the stock movements page */
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+    
+    .badge-success {
+        background-color: #28a745;
+    }
+    
+    .badge-danger {
+        background-color: #dc3545;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .d-flex {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .d-flex form {
+            width: 100%;
+        }
+        
+        .form-control, .form-select {
+            width: 100% !important;
+        }
+    }
+</style>
+{% endblock %}

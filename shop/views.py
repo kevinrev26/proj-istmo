@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
+from django.utils import timezone
 from .models import Shop, Subscription, SubscriptionPlan
 from ecommerce.models import Product, Stock, StockMovement, Category
 from cart.models import Order, Item
@@ -235,3 +237,52 @@ def store_front(request, store_slug):
             'description': shop.description,
         }
     })
+
+@login_required
+def stock_movements(request):
+    # Default filter - last 30 days
+    date_filter = request.GET.get('date_filter', '30days')
+    product_name = request.GET.get('product_name', '')
+    user_shop = Shop.objects.filter(owner=request.user).first()
+    # Base queryset
+    movements = StockMovement.objects.filter(product__shop=user_shop)
+    
+    # Apply date filters
+    today = timezone.now().date()
+    if date_filter == 'today':
+        movements = movements.filter(date__date=today)
+    elif date_filter == '7days':
+        movements = movements.filter(date__date__gte=today - timedelta(days=7))
+    elif date_filter == '30days':
+        movements = movements.filter(date__date__gte=today - timedelta(days=30))
+    elif date_filter == 'all':
+        pass  # No date filter
+    
+    # Apply product name filter
+    if product_name:
+        movements = movements.filter(
+            Q(product__name__icontains=product_name) |
+            Q(product__id__icontains=product_name)
+        )
+    
+    # Group by date for display
+    grouped_movements = {}
+    for movement in movements.order_by('-date'):
+        date_str = movement.date.strftime('%Y-%m-%d')
+        if date_str not in grouped_movements:
+            grouped_movements[date_str] = []
+        grouped_movements[date_str].append(movement)
+    
+    context = {
+        'grouped_movements': grouped_movements,
+        'date_filter': date_filter,
+        'product_name': product_name,
+        'date_options': [
+            ('today', 'Today'),
+            ('7days', 'Last 7 Days'),
+            ('30days', 'Last 30 Days'),
+            ('all', 'All Time'),
+        ]
+    }
+    return render(request, 'shop/stock_movements.html', context)
+ 

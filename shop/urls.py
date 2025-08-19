@@ -12,4 +12,5 @@ urlpatterns = [
     path('subcription_plans', views.show_subcription_plan, name='shop.subcription_plans'),
     path('subscription/start-trial/<str:plan>/', views.start_trial, name='subscription.start_trial'),
     path('store/<slug:store_slug>/', views.store_front, name='store_front'),
+    path('stock-movements/', views.stock_movements, name='shop.stock_movements'),
 ]

@@ -15,6 +15,9 @@
                     <span class="badge bg-warning text-dark">{{ new_orders_count }}</span>
                 {% endif %}
             </a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'shop.stock_movements' %}">
+                Stock Movements
+            </a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'shop.chat' %}">Chat</a></li>
         </ul>
     </div>
